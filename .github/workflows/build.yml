@@ -47,17 +47,20 @@ jobs:
         run: ./gradlew testDebugUnitTest assembleRelease --stacktrace
 
       - name: Name the APK
-        run: cp app/build/outputs/apk/release/app-release.apk "Hikari-${GITHUB_REF_NAME//\//-}.apk"
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk "hikari-${GITHUB_SHA::7}.apk"
+          echo "APK_NAME=hikari-${GITHUB_SHA::7}.apk" >> "$GITHUB_ENV"
 
-      - uses: actions/upload-artifact@v4
+      # archive: false uploads the file as-is (no zip); the artifact is named after the file
+      - uses: actions/upload-artifact@v7
         with:
-          name: Hikari-apk
-          path: Hikari-*.apk
+          path: ${{ env.APK_NAME }}
+          archive: false
           if-no-files-found: error
 
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: Hikari-*.apk
+          files: ${{ env.APK_NAME }}
           generate_release_notes: true

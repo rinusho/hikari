@@ -7,8 +7,8 @@ A foreground service runs a local MTProto proxy on `127.0.0.1:1443`. Telegram co
 (`kws{dc}.web.telegram.org`), falling back to Cloudflare-proxied domains and then plain TCP.
 
 ## Download
-Ready-made APKs are on the [Releases](../../releases) page; every push also uploads one as a
-workflow artifact (Actions → Build). Allow installs from unknown sources to sideload.
+Ready-made APKs are on the [Releases](../../releases) page; every push also uploads
+`hikari-<commit>.apk` as an unzipped workflow artifact (Actions → Build). Allow installs from unknown sources to sideload.
 
 ## Ported
 - obfuscated2 handshake, `dd` secret, DC / media detection, re-encryption (AES-CTR)
