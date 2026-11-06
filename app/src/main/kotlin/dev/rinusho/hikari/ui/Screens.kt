@@ -48,6 +48,8 @@ import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Key
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.PowerSettingsNew
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RestartAlt
@@ -99,6 +101,7 @@ import dev.rinusho.hikari.MainViewModel
 import dev.rinusho.hikari.R
 import dev.rinusho.hikari.proxy.Proto
 import dev.rinusho.hikari.proxy.parseDcIps
+import dev.rinusho.hikari.proxy.proxyLink
 
 private val Gutter = 16.dp
 
@@ -183,7 +186,7 @@ fun HomeScreen(vm: MainViewModel) {
     val stats by vm.stats.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
     val cs = MaterialTheme.colorScheme
-    val link = "tg://proxy?server=127.0.0.1&port=${settings.port}&secret=dd${settings.secret}"
+    val link = proxyLink("127.0.0.1", settings.port, settings.secret, settings.fakeTlsDomain)
 
     Column(
         Modifier
@@ -578,8 +581,69 @@ fun SettingsScreen(vm: MainViewModel) {
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.fillMaxWidth(),
             )
+            SwitchRow(
+                stringResource(R.string.set_h2), stringResource(R.string.set_h2_desc),
+                s.h2Media, enabled = s.cfFallback && !s.disableSecure && !s.forceTestDc,
+            ) { c -> vm.update { it.copy(h2Media = c) } }
+            SwitchRow(
+                stringResource(R.string.set_nosecure), stringResource(R.string.set_nosecure_desc),
+                s.disableSecure,
+            ) { c -> vm.update { it.copy(disableSecure = c) } }
+            OutlinedTextField(
+                value = s.cfWorkerDomains,
+                onValueChange = { v -> vm.update { it.copy(cfWorkerDomains = v) } },
+                label = { Text(stringResource(R.string.set_worker)) },
+                supportingText = { Text(stringResource(R.string.set_worker_hint)) },
+                minLines = 2,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        SettingGroup(Icons.Rounded.Lock, stringResource(R.string.set_stealth)) {
+            OutlinedTextField(
+                value = s.fakeTlsDomain,
+                onValueChange = { v -> vm.update { it.copy(fakeTlsDomain = v.trim()) } },
+                singleLine = true,
+                label = { Text(stringResource(R.string.set_faketls)) },
+                supportingText = { Text(stringResource(R.string.set_faketls_hint)) },
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        SettingGroup(Icons.Rounded.Tune, stringResource(R.string.set_advanced)) {
+            SwitchRow(
+                stringResource(R.string.set_proxyproto), stringResource(R.string.set_proxyproto_desc),
+                s.proxyProtocol,
+            ) { c -> vm.update { it.copy(proxyProtocol = c) } }
+            SwitchRow(
+                stringResource(R.string.set_testdc), stringResource(R.string.set_testdc_desc),
+                s.forceTestDc,
+            ) { c -> vm.update { it.copy(forceTestDc = c) } }
         }
         Spacer(Modifier.height(8.dp))
+    }
+}
+
+@Composable
+private fun SwitchRow(
+    title: String, desc: String, checked: Boolean, enabled: Boolean = true, onChange: (Boolean) -> Unit,
+) {
+    val cs = MaterialTheme.colorScheme
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(enabled = enabled) { onChange(!checked) },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyLarge, color = if (enabled) cs.onSurface else cs.onSurfaceVariant)
+            Text(desc, style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant)
+        }
+        Switch(checked = checked, onCheckedChange = onChange, enabled = enabled)
     }
 }
 

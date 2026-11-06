@@ -48,6 +48,20 @@
     <string name="set_cf_desc">If a direct WebSocket is unavailable, relay through Cloudflare-proxied domains.</string>
     <string name="set_cf_domains">Custom CF domains</string>
     <string name="set_cf_domains_hint">Optional, separated by spaces or new lines. Empty = built-in list.</string>
+    <string name="set_h2">HTTP/2 for media</string>
+    <string name="set_h2_desc">Multiplex media downloads over Cloudflare-proxied domains. Needs the Cloudflare fallback, TLS and no test DCs.</string>
+    <string name="set_nosecure">No TLS for Cloudflare</string>
+    <string name="set_nosecure_desc">Use port 80 for Cloudflare proxy and worker connections.</string>
+    <string name="set_worker">Cloudflare Worker domains</string>
+    <string name="set_worker_hint">Optional, separated by spaces or new lines. Tried before every other fallback.</string>
+    <string name="set_stealth">Fake TLS</string>
+    <string name="set_faketls">Fake TLS domain</string>
+    <string name="set_faketls_hint">Empty = off. With a domain (e.g. example.com) the link uses an ee secret and other traffic is relayed to that site.</string>
+    <string name="set_advanced">Advanced</string>
+    <string name="set_proxyproto">PROXY protocol</string>
+    <string name="set_proxyproto_desc">Expect a PROXY v1 header, for use behind nginx or haproxy.</string>
+    <string name="set_testdc">Telegram test servers</string>
+    <string name="set_testdc_desc">Send all traffic to Telegram test datacenters.</string>
     <string name="restart_needed">Settings changed. Restart the proxy to apply them.</string>
     <string name="restart">Restart</string>
 

@@ -16,6 +16,12 @@ data class Settings(
     val poolSize: Int = 4,
     val cfFallback: Boolean = true,
     val cfDomains: String = "",
+    val cfWorkerDomains: String = "",
+    val h2Media: Boolean = true,
+    val disableSecure: Boolean = false,
+    val fakeTlsDomain: String = "",
+    val proxyProtocol: Boolean = false,
+    val forceTestDc: Boolean = false,
 ) {
     fun toConfig(): Result<ProxyConfig> = parseDcIps(dcIps).map {
         ProxyConfig(
@@ -25,6 +31,12 @@ data class Settings(
             poolSize = poolSize,
             cfFallback = cfFallback,
             cfUserDomains = parseDomains(cfDomains),
+            cfWorkerDomains = parseDomains(cfWorkerDomains),
+            h2Media = h2Media,
+            disableSecure = disableSecure,
+            fakeTlsDomain = fakeTlsDomain.trim(),
+            proxyProtocol = proxyProtocol,
+            forceTestDc = forceTestDc,
         )
     }
 }
@@ -45,6 +57,12 @@ class SettingsRepo(context: Context) {
             poolSize = prefs.getInt("poolSize", 4),
             cfFallback = prefs.getBoolean("cfFallback", true),
             cfDomains = prefs.getString("cfDomains", "") ?: "",
+            cfWorkerDomains = prefs.getString("cfWorkerDomains", "") ?: "",
+            h2Media = prefs.getBoolean("h2Media", true),
+            disableSecure = prefs.getBoolean("disableSecure", false),
+            fakeTlsDomain = prefs.getString("fakeTlsDomain", "") ?: "",
+            proxyProtocol = prefs.getBoolean("proxyProtocol", false),
+            forceTestDc = prefs.getBoolean("forceTestDc", false),
         )
     }
 
@@ -52,7 +70,10 @@ class SettingsRepo(context: Context) {
         prefs.edit()
             .putInt("port", s.port).putString("secret", s.secret).putString("dcIps", s.dcIps)
             .putInt("poolSize", s.poolSize).putBoolean("cfFallback", s.cfFallback)
-            .putString("cfDomains", s.cfDomains).apply()
+            .putString("cfDomains", s.cfDomains).putString("cfWorkerDomains", s.cfWorkerDomains)
+            .putBoolean("h2Media", s.h2Media).putBoolean("disableSecure", s.disableSecure)
+            .putString("fakeTlsDomain", s.fakeTlsDomain).putBoolean("proxyProtocol", s.proxyProtocol)
+            .putBoolean("forceTestDc", s.forceTestDc).apply()
     }
 
     var wantRunning: Boolean

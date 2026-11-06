@@ -48,6 +48,20 @@
     <string name="set_cf_desc">Если прямой WebSocket недоступен, трафик идёт через домены за Cloudflare.</string>
     <string name="set_cf_domains">Свои CF-домены</string>
     <string name="set_cf_domains_hint">Необязательно, через пробел или с новой строки. Пусто — встроенный список.</string>
+    <string name="set_h2">HTTP/2 для медиа</string>
+    <string name="set_h2_desc">Мультиплексирование загрузки медиа через домены за Cloudflare. Нужны резерв через Cloudflare, TLS и отсутствие тестовых DC.</string>
+    <string name="set_nosecure">Без TLS для Cloudflare</string>
+    <string name="set_nosecure_desc">Порт 80 для подключений к Cloudflare-прокси и воркеру.</string>
+    <string name="set_worker">Домены Cloudflare Worker</string>
+    <string name="set_worker_hint">Необязательно, через пробел или с новой строки. Пробуются раньше остальных резервов.</string>
+    <string name="set_stealth">Fake TLS</string>
+    <string name="set_faketls">Домен Fake TLS</string>
+    <string name="set_faketls_hint">Пусто — выключено. С доменом (например, example.com) ссылка использует секрет ee, а прочий трафик уходит на этот сайт.</string>
+    <string name="set_advanced">Дополнительно</string>
+    <string name="set_proxyproto">PROXY protocol</string>
+    <string name="set_proxyproto_desc">Ожидать заголовок PROXY v1, для работы за nginx или haproxy.</string>
+    <string name="set_testdc">Тестовые серверы Telegram</string>
+    <string name="set_testdc_desc">Отправлять весь трафик на тестовые дата-центры Telegram.</string>
     <string name="restart_needed">Настройки изменены. Перезапустите прокси, чтобы применить их.</string>
     <string name="restart">Перезапустить</string>
 

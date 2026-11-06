@@ -19,8 +19,36 @@ data class ProxyConfig(
     val poolSize: Int = 4,
     val cfFallback: Boolean = true,
     val cfUserDomains: List<String> = emptyList(),
+    /** Cloudflare Worker domains tried before every other fallback. */
+    val cfWorkerDomains: List<String> = emptyList(),
+    /** HTTP/2 multiplexing of media DCs over Cloudflare-proxied domains. */
+    val h2Media: Boolean = true,
+    /** Use port 80 (no TLS) for CF proxy / CF worker connections. */
+    val disableSecure: Boolean = false,
+    /** Non-empty enables Fake TLS (`ee` secret) with this SNI / masking domain. */
+    val fakeTlsDomain: String = "",
+    /** Expect a PROXY protocol v1 header before the handshake (behind nginx/haproxy). */
+    val proxyProtocol: Boolean = false,
+    /** Send ALL traffic to Telegram test datacenters. */
+    val forceTestDc: Boolean = false,
 ) {
-    val dcLink: String get() = "tg://proxy?server=$host&port=$port&secret=dd$secretHex"
+    val h2Enabled: Boolean get() = h2Media && cfFallback && !disableSecure && !forceTestDc
+    val link: String get() = proxyLink(host, port, secretHex, fakeTlsDomain)
+}
+
+/** `tg://proxy` link: `ee<secret><domain hex>` with Fake TLS, `dd<secret>` otherwise. */
+fun proxyLink(host: String, port: Int, secretHex: String, fakeTlsDomain: String = ""): String {
+    val secret = if (fakeTlsDomain.isNotBlank())
+        "ee$secretHex" + Proto.hex(fakeTlsDomain.trim().toByteArray(Charsets.US_ASCII))
+    else "dd$secretHex"
+    return "tg://proxy?server=$host&port=$port&secret=$secret"
+}
+
+/** Parses the optional `PROXY TCP4 src dst sport dport` line; returns "src:sport" or null. */
+fun parseProxyLine(line: String): String? {
+    val parts = line.trim().split(' ')
+    if (parts.firstOrNull() != "PROXY") return null
+    return if (parts.size >= 6) "${parts[2]}:${parts[4]}" else ""
 }
 
 fun parseDcIps(text: String): Result<Map<Int, String>> = runCatching {
@@ -131,19 +159,25 @@ object ProxyStats {
     val down = AtomicLong()
     val poolHits = AtomicLong()
     val poolMisses = AtomicLong()
+    val h2 = AtomicLong()
+    val worker = AtomicLong()
+    val masked = AtomicLong()
 
     data class Snapshot(
         val total: Long, val active: Long, val ws: Long, val cf: Long, val tcp: Long,
         val bad: Long, val up: Long, val down: Long, val poolHits: Long, val poolMisses: Long,
+        val h2: Long, val worker: Long, val masked: Long,
     )
 
     fun snapshot() = Snapshot(
         total.get(), active.get(), ws.get(), cf.get(), tcp.get(), bad.get(),
         up.get(), down.get(), poolHits.get(), poolMisses.get(),
+        h2.get(), worker.get(), masked.get(),
     )
 
     fun reset() {
-        listOf(total, active, ws, cf, tcp, bad, up, down, poolHits, poolMisses).forEach { it.set(0) }
+        listOf(total, active, ws, cf, tcp, bad, up, down, poolHits, poolMisses, h2, worker, masked)
+            .forEach { it.set(0) }
     }
 }
 

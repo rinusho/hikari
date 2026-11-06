@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
  * if that fails, SNI fronting (`sprinthost.ru`) is tried.
  */
 class WsPool(private val cfg: ProxyConfig, private val scope: CoroutineScope) {
-    private data class Key(val dc: Int, val media: Boolean)
+    private data class Key(val dc: Int, val media: Boolean, val test: Boolean)
 
     private val lock = Any()
     private val idle = HashMap<Key, ArrayDeque<RawWebSocket>>()
@@ -37,7 +37,7 @@ class WsPool(private val cfg: ProxyConfig, private val scope: CoroutineScope) {
             }
         }
         for (dc in cfg.dcRedirects.keys) for (media in listOf(false, true)) {
-            val k = Key(dc, media)
+            val k = Key(dc, media, cfg.forceTestDc)
             synchronized(lock) { idle.getOrPut(k) { ArrayDeque() } }
             scheduleRefill(k)
         }
@@ -45,9 +45,9 @@ class WsPool(private val cfg: ProxyConfig, private val scope: CoroutineScope) {
     }
 
     /** Returns a ready WebSocket for the DC or null if none is available. */
-    fun get(dc: Int, media: Boolean): RawWebSocket? {
+    fun get(dc: Int, media: Boolean, test: Boolean = false): RawWebSocket? {
         if (cfg.poolSize <= 0 || cfg.dcRedirects[dc] == null) return null
-        val k = Key(dc, media)
+        val k = Key(dc, media, test)
         var found: RawWebSocket? = null
         val stale: List<RawWebSocket>
         synchronized(lock) {
@@ -86,7 +86,8 @@ class WsPool(private val cfg: ProxyConfig, private val scope: CoroutineScope) {
             try {
                 val needed = synchronized(lock) { cfg.poolSize - (idle[k]?.size ?: 0) }
                 if (needed <= 0) return@launch
-                val results = (1..needed).map { async { connectOne(ip, Proto.wsDomains(k.dc, k.media)) } }.awaitAll()
+                val path = if (k.test) Proto.WS_PATH_TEST else Proto.WS_PATH
+                val results = (1..needed).map { async { connectOne(ip, Proto.wsDomains(k.dc, k.media), path) } }.awaitAll()
                 val ok = results.filterNotNull()
                 synchronized(lock) {
                     val bucket = idle.getOrPut(k) { ArrayDeque() }
@@ -107,13 +108,13 @@ class WsPool(private val cfg: ProxyConfig, private val scope: CoroutineScope) {
         }
     }
 
-    private fun connectOne(ip: String, domains: List<String>): RawWebSocket? {
+    private fun connectOne(ip: String, domains: List<String>, path: String): RawWebSocket? {
         for (domain in domains) {
             val modes = if (frontingFirst) listOf(true, false) else listOf(false, true)
             for (fronted in modes) {
                 try {
                     val ws = RawWebSocket.connect(
-                        ip, domain, timeoutMs = if (fronted) 7000 else 8000,
+                        ip, domain, timeoutMs = if (fronted) 7000 else 8000, path = path,
                         sni = if (fronted) "sprinthost.ru" else null,
                     )
                     frontingFirst = fronted

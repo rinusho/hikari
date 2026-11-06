@@ -16,8 +16,18 @@ workflow artifact (Actions → Build). Allow installs from unknown sources to si
 - WebSocket pool per DC with SNI-fronting retry, CF proxy fallback with domain balancer
   (built-in list + hourly refresh from upstream), TCP fallback with exponential back-off
 
-## Not ported yet
-Fake TLS (`ee` secret), CF Worker fallback, HTTP/2 media multiplexing, test DCs, PROXY protocol.
+- Fake TLS (`ee` secret): ClientHello HMAC check, forged ServerHello profiled on the masking site,
+  replay cache, non-matching traffic relayed to the real site
+- CF Worker fallback (tried first, warm pool per DC)
+- HTTP/2 media multiplexing: media packets are POSTed to `https://kws{dc}.{cf-domain}/api` over
+  shared HTTP/2 connections, with the upstream replay/recovery logic (HTTP/2 framing via OkHttp)
+- Telegram test DCs (`dc >= 10000` or forced), `/apiws_test`
+- PROXY protocol v1, "no TLS" mode (port 80) for CF connections
+
+All of these are configured in Settings. Deviations from upstream: HTTP/2 uses OkHttp instead of
+`h2`/`httpx`, there is no per-request diagnostic tracing, and X25519 keys in the forged ServerHello are
+random field elements (the client never derives keys from them, same as upstream's fallback).
+None of it has been exercised against real Telegram servers or on a device yet.
 
 ## Build
 ```

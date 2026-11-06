@@ -40,7 +40,15 @@ object Proto {
         203 to "91.105.192.100",
     )
 
+    /** Telegram test datacenters (plain-TCP fallback for test DCs). */
+    val DC_TEST_IPS: Map<Int, String> = mapOf(
+        1 to "149.154.175.10",
+        2 to "149.154.167.40",
+        3 to "149.154.175.117",
+    )
+
     const val WS_PATH = "/apiws"
+    const val WS_PATH_TEST = "/apiws_test"
 
     fun wsDomains(dc: Int, isMedia: Boolean): List<String> {
         val d = if (dc == 203) 2 else dc
