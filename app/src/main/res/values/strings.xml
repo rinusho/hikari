@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hikari</string>
+    <string name="tap_to_start">Tap to start</string>
+    <string name="tap_to_stop">Tap to stop</string>
+    <string name="routes_title">Routes</string>
+    <string name="set_pool_title">WebSocket pool per DC</string>
+    <string name="off">off</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_settings">Settings</string>
+    <string name="tab_logs">Logs</string>
+
+    <string name="status_running">Proxy is running</string>
+    <string name="status_stopped">Proxy is stopped</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+    <string name="connect_title">Connect Telegram</string>
+    <string name="connect_desc">Add the local proxy to Telegram in one tap. Start the proxy first.</string>
+    <string name="add_to_telegram">Add to Telegram</string>
+    <string name="copy_link">Copy link</string>
+    <string name="link_copied">Link copied</string>
+    <string name="telegram_missing">Telegram is not installed</string>
+
+    <string name="stats_title">Statistics</string>
+    <string name="stat_active">Active</string>
+    <string name="stat_total">Total</string>
+    <string name="stat_up">Uploaded</string>
+    <string name="stat_down">Downloaded</string>
+    <string name="stat_ws">Via WebSocket</string>
+    <string name="stat_cf">Via CF proxy</string>
+    <string name="stat_tcp">Via TCP</string>
+    <string name="stat_bad">Rejected</string>
+
+    <string name="set_network">Local server</string>
+    <string name="set_port">Port</string>
+    <string name="set_port_error">Enter a port from 1024 to 65535</string>
+    <string name="set_secret">Secret (32 hex)</string>
+    <string name="set_secret_note">After changing the secret or port, re-add the proxy in Telegram.</string>
+    <string name="set_regenerate">Generate new secret</string>
+    <string name="set_routing">Routing</string>
+    <string name="set_dc">DC → IP mapping</string>
+    <string name="set_dc_hint">One DC:IP per line, e.g. 2:149.154.167.220</string>
+    <string name="set_pool">WebSocket pool per DC: %1$d</string>
+    <string name="set_pool_off">WebSocket pool per DC: off</string>
+    <string name="set_cf">Cloudflare proxy fallback</string>
+    <string name="set_cf_desc">If a direct WebSocket is unavailable, relay through Cloudflare-proxied domains.</string>
+    <string name="set_cf_domains">Custom CF domains</string>
+    <string name="set_cf_domains_hint">Optional, separated by spaces or new lines. Empty = built-in list.</string>
+    <string name="restart_needed">Settings changed. Restart the proxy to apply them.</string>
+    <string name="restart">Restart</string>
+
+    <string name="logs_clear">Clear</string>
+    <string name="logs_copy">Copy</string>
+    <string name="logs_empty">Nothing here yet. Start the proxy to see activity.</string>
+
+    <string name="err_bind">Cannot listen on port %1$d: %2$s</string>
+    <string name="notif_channel">Proxy status</string>
+    <string name="notif_text">Listening on %1$s:%2$d</string>
+    <string name="notif_stop">Stop</string>
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hikari</string>
+    <string name="tap_to_start">Нажмите, чтобы запустить</string>
+    <string name="tap_to_stop">Нажмите, чтобы остановить</string>
+    <string name="routes_title">Маршруты</string>
+    <string name="set_pool_title">Пул WebSocket на каждый DC</string>
+    <string name="off">выкл.</string>
+
+    <string name="tab_home">Главная</string>
+    <string name="tab_settings">Настройки</string>
+    <string name="tab_logs">Журнал</string>
+
+    <string name="status_running">Прокси работает</string>
+    <string name="status_stopped">Прокси остановлен</string>
+    <string name="start">Запустить</string>
+    <string name="stop">Остановить</string>
+
+    <string name="connect_title">Подключение к Telegram</string>
+    <string name="connect_desc">Добавьте локальный прокси в Telegram одним нажатием. Сначала запустите прокси.</string>
+    <string name="add_to_telegram">Добавить в Telegram</string>
+    <string name="copy_link">Копировать ссылку</string>
+    <string name="link_copied">Ссылка скопирована</string>
+    <string name="telegram_missing">Telegram не установлен</string>
+
+    <string name="stats_title">Статистика</string>
+    <string name="stat_active">Активные</string>
+    <string name="stat_total">Всего</string>
+    <string name="stat_up">Отправлено</string>
+    <string name="stat_down">Получено</string>
+    <string name="stat_ws">Через WebSocket</string>
+    <string name="stat_cf">Через CF-прокси</string>
+    <string name="stat_tcp">Через TCP</string>
+    <string name="stat_bad">Отклонено</string>
+
+    <string name="set_network">Локальный сервер</string>
+    <string name="set_port">Порт</string>
+    <string name="set_port_error">Введите порт от 1024 до 65535</string>
+    <string name="set_secret">Секрет (32 hex)</string>
+    <string name="set_secret_note">После смены секрета или порта добавьте прокси в Telegram заново.</string>
+    <string name="set_regenerate">Сгенерировать новый секрет</string>
+    <string name="set_routing">Маршрутизация</string>
+    <string name="set_dc">Соответствие DC → IP</string>
+    <string name="set_dc_hint">По одной паре DC:IP в строке, например 2:149.154.167.220</string>
+    <string name="set_pool">Пул WebSocket на каждый DC: %1$d</string>
+    <string name="set_pool_off">Пул WebSocket на каждый DC: выключен</string>
+    <string name="set_cf">Резерв через Cloudflare-прокси</string>
+    <string name="set_cf_desc">Если прямой WebSocket недоступен, трафик идёт через домены за Cloudflare.</string>
+    <string name="set_cf_domains">Свои CF-домены</string>
+    <string name="set_cf_domains_hint">Необязательно, через пробел или с новой строки. Пусто — встроенный список.</string>
+    <string name="restart_needed">Настройки изменены. Перезапустите прокси, чтобы применить их.</string>
+    <string name="restart">Перезапустить</string>
+
+    <string name="logs_clear">Очистить</string>
+    <string name="logs_copy">Копировать</string>
+    <string name="logs_empty">Пока пусто. Запустите прокси, чтобы увидеть активность.</string>
+
+    <string name="err_bind">Не удалось слушать порт %1$d: %2$s</string>
+    <string name="notif_channel">Состояние прокси</string>
+    <string name="notif_text">Слушает %1$s:%2$d</string>
+    <string name="notif_stop">Остановить</string>
+</resources>
